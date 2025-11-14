@@ -15,16 +15,16 @@
   },
   "autoload": {
     "psr-4": {
-      "Byondtecch\\ChipIn\\": "src/"
+      "Byondtech\\ChipIn\\": "src/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Byondtecch\\ChipIn\\ChipInServiceProvider"
+        "Byondtech\\ChipIn\\ChipInServiceProvider"
       ],
       "aliases": {
-        "ChipIn": "Byondtecch\\ChipIn\\Facades\\ChipIn"
+        "ChipIn": "Byondtech\\ChipIn\\Facades\\ChipIn"
       }
     }
   },
