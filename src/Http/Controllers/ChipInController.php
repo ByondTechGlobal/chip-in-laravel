@@ -1,6 +1,6 @@
 <?php
 
-namespace Byond\ChipIn\Http\Controllers;
+namespace Byondtech\ChipIn\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -37,8 +37,10 @@ class ChipInController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-    $purchase = new Purchase(app(\Aliff\ChipIn\Http\Client::class));
+    $purchase = new Purchase(app(\Byondtech\ChipIn\Http\Client::class));
     $data = $purchase->handleCallback($request->all());
+
+    Log::info('CHIP callback data processed', ['data' => $data]);
 
     try {
         // 🔧 Dynamically call the configured callback handler
@@ -48,7 +50,7 @@ class ChipInController extends Controller
             $handler = app($handlerClass);
 
             if (method_exists($handler, 'handleChipInCallback')) {
-                $handler->handleChipInCallback($data);
+                $handler->handleChipInCallback(new Request($data));
                 Log::info("✅ Callback handled by {$handlerClass}");
             } else {
                 Log::warning("⚠️ {$handlerClass} does not implement handleChipInCallback()");
@@ -63,6 +65,8 @@ class ChipInController extends Controller
                 Log::info("✅ Payment successful for ID: {$data['id']}");
                 break;
             case 'failed':
+                 Log::warning("⚠️ Payment failed for ID: {$data['id']}");
+
             case 'cancelled':
                 Log::warning("⚠️ Payment failed or cancelled for ID: {$data['id']}");
                 break;
